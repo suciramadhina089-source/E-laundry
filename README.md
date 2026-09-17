@@ -1,35 +1,34 @@
-# 🧺 E-Londri — Sistem Manajemen & Kasir Laundry Digital
+## E-Londri — Core API System
 
-![Laravel Version](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)
-![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+Backend Engine & RESTful API Service untuk Digitalisasi Operasional Laundry.
 
-Aplikasi manajemen operasional dan sistem kasir _laundry_ digital berbasis RESTful API. Proyek ini dirancang untuk mempermudah pencatatan transaksi kasir, pelacakan status pengerjaan cuci/setrika secara real-time, serta pengelolaan data pelanggan dan paket layanan.
+Proyek ini merupakan backend engine berbasis RESTful API yang melayani seluruh transaksi kasir, manajemen inventaris paket cuci, dan monitoring status pesanan pelanggan secara terpusat.
 
----
-
-## 📋 Daftar Isi
+## Daftar Isi
 
 -   [Struktur Tim & Pembagian Peran](#-struktur-tim--pembagian-peran)
 -   [Arsitektur & Teknologi](#-arsitektur--teknologi)
 -   [Struktur Basis Data & ERD](#-struktur-basis-data--erd)
 -   [Panduan Instalasi & Konfigurasi Lokal](#-panduan-instalasi--konfigurasi-lokal)
+-   [Dokumentasi RESTful API](#-dokumentasi-restful-api)
+-   [Pengujian (Testing)](#-pengujian-testing)
+-   [Lisensi](#-lisensi)
 
----
+### Struktur Tim & Pembagian Peran
 
-## 👥 Struktur Tim & Pembagian Peran
+-   **[Project Manager] Anisa Syahfitri**
+    Pengendalian _timeline_, penyusunan papan Kanban, QA fungsional, dan finalisasi dokumentasi repositori.
 
-| Peran                  | Anggota Tim     | Tanggung Jawab Utama                                                                                         |
-| :--------------------- | :-------------- | :----------------------------------------------------------------------------------------------------------- |
-| **Project Manager**    | Nama PM         | Pengendalian _timeline_, penyusunan papan Kanban, QA fungsional, dan finalisasi dokumentasi repositori.      |
-| **Database Analyst**   | Nama DB Analyst | Perancangan ERD, skema migrasi Laravel, penentuan relasi Eloquent, serta pembuatan _Seeder_ & _Factory_.     |
-| **Backend Developer**  | Nama Backend    | Pembangunan RESTful API, validasi request (`FormRequest`), API Resource, dan pengelolaan transaksi database. |
-| **Frontend Developer** | Nama Frontend   | Pengembangan antarmuka kasir, konsumsi API _endpoint_, validasi _client-side_, dan penanganan _error flow_.  |
+-   **[DataBase Analyst] Suci Ramadhina**
+    Perancangan ERD, skema migrasi Laravel, penentuan relasi Eloquent, serta pembuatan _Seeder_ & _Factory_.
 
----
+-   **[Backend Developer] Chyntia Putri Dila**
+    Pembangunan RESTful API, validasi request (`FormRequest`), API Resource, dan pengelolaan transaksi database.
 
-## 🛠️ Arsitektur & Teknologi
+-   **[Frontend Developer] Meutya Wahyu Talita**
+    Pengembangan antarmuka kasir, konsumsi API _endpoint_, validasi _client-side_, dan penanganan _error flow_.
+
+## Arsitektur & Teknologi
 
 -   **Framework Backend:** Laravel 11
 -   **Database Management System:** MySQL 8.0
@@ -37,49 +36,150 @@ Aplikasi manajemen operasional dan sistem kasir _laundry_ digital berbasis RESTf
 -   **API Documentation & Testing:** Postman Collection v2.1
 -   **Version Control System:** Git & GitHub
 
----
+## Penjelasan Entitas
 
-## 🗄️ Struktur Basis Data & ERD
++------------------+ +------------------+ +------------------+
+| customers | | orders | | services |
++------------------+ +------------------+ +------------------+
+| id (PK) |<---+ | id (PK) |<---+ | id (PK) |
+| name | | | invoice_code | | | name |
+| phone | +--- | customer_id (FK) | | | price |
+| address | | order_date | | | unit |
++------------------+ | status | | +------------------+
+| total_price | | ^
++------------------+ | |
+^ | |
+| +------+------+
+| |
++----+---------------------+----+
+| order_details |
++-------------------------------+
+| id (PK) |
+| order_id (FK) |
+| service_id (FK) |
+| qty |
+| subtotal |
++-------------------------------+
 
-Sistem E-Londri menggunakan 4 tabel utama dengan relasi relasional:
+## Panduan Instalasi & Konfigurasi Lokal
 
-[ customers ] (1) <--- (N) [ orders ] (N) <---> (N) [ services ]
+1. Syarat Perangkat Lunak
+   PHP > 8.2
+   Composer 2.x
+   MySQL Server 8.0+
+   Postman (untuk pengujian API)
 
-### Penjelasan Entitas:
+2. Langkah Instalasi
+   1.Clone repositori dari Github
+   git clone https://github.com/suciramadhina089-source/E-laundry cd elondri-backend
+   2.Masuk ke direktori proyek
+   cd elondri-pengayaan
+   3.Install dependensi PHP via Composer
+   composer install
+   4.Salin berkas lingkungan (.env)
+   cp .env.example .env
+   5.Generate Application Key
+   php artisan key:generate
 
-1. **`customers`** (Master Pelanggan): Menyimpan data identitas pelanggan (`name`, `phone`, `address`).
-2. **`services`** (Master Layanan): Menyimpan paket laundry (`name`, `price_per_kg`, `unit`).
-3. **`orders`** (Kepala Transaksi): Mencatat nota transaksi (`invoice_code`, `order_date`, `completion_date`, `status`, `total_price`).
-4. **`order_details`** (Pivot Table): Hubungan _Many-to-Many_ antara pesanan dan paket layanan (`qty`, `subtotal`).
+## Konfigurasi Basis Data (.env)
 
----
+Buka berkas .env lalu atur koneksi databvase anda:
 
-## ⚙️ Panduan Instalasi & Konfigurasi Lokal
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=db_elondri
+DB_USERNAME=root
+DB_PASSWORD=
 
-Ikuti langkah-langkah berikut untuk menjalankan proyek di lingkungan lokal:
+## Migrasi & Seeding Data Dummy
 
-### 1. Prasyarat Sistem
+Lalu jalankan di terminal:
+php artisan migrate:fresh --seed
 
--   PHP >= 8.2
--   Composer >= 2.x
--   MySQL Server
--   Git
+## Jalankan Peladen Lokal
 
-### 2. Langkah Instalasi
+php artisan serve
 
-```bash
-# 1. Clone repositori dari GitHub
-git clone [https://github.com/username/elondri9.git](https://github.com/username/elondri9.git)
+## Dokumentasi RESTful API Endpoint Utama
 
-# 2. Masuk ke direktori proyek
-cd elondri9
++------------+-------------------------+-------------------------------------------------+
+| Action | Route | Keterangan |
++------------+-------------------------+-------------------------------------------------+
+| GET | /api/orders | Ambil riwayat semua transaksi. |
+| POST | /api/orders | Tambah transaksi baru. |
+| GET | /api/orders/{id} | Ambil detail satu transaksi berdasarkan ID. |
+| PACTH | /api/orders/{id}/status | Perbarui status proses pesanan. |
+| DELETE | /api/orders/{id} | Batalkan/hapus transaksi. |
++------------+-------------------------+-------------------------------------------------+
 
-# 3. Install dependensi PHP via Composer
-composer install
+## Contoh Payload Request (POST /api/orders)
 
-# 4. Salin berkas lingkungan (.env)
-cp .env.example .env
+{
+"customer_id": 1,
+"completion_date": "2026-09-16",
+"services": [
+{
+"service_id": 1,
+"qty": 3
+},
+{
+"service_id": 2,
+"qty": 1
+}
+]
+}
 
-# 5. Generate Application Key
-php artisan key:generate
-```
+## Contoh Response JSON Success (201 Created)
+
+{
+"status": true,
+"message": "Transaksi laundry berhasil dibuat",
+"data": {
+"id": 12,
+"invoice_code": "INV-20260914-482",
+"order_date": "2026-09-14 08:30:00",
+"completion_date": "2026-09-16",
+"status": "pending",
+"total_price": 45000,
+
+    "customer": {
+    "id": 1,
+    "name": "Budi Santoso",
+    "phone": "08123456789"
+
+},
+
+"details": [
+
+{
+"service_id": 1,
+"service_name": "Cuci Kiloan Regular",
+"price_per_kg": 10000,
+"qty": 3,
+"subtotal": 30000
+},
+{
+"service_id": 2,
+"service_name": "Setrika Express",
+"price_per_kg": 15000,
+"qty": 1,
+"subtotal": 15000
+}
+]
+}
+}
+
+## Contoh Response Error Validation (422 Unprocessable Entity)
+
+{
+"message": "Pelanggan wajib dipilih. (and 1 more error)",
+"errors": {
+"customer_id": [
+"Pelanggan wajib dipilih."
+],
+"services": [
+"Minimal pilih 1 layanan laundry."
+]
+}
+}
