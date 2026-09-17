@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Order;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

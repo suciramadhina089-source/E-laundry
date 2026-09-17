@@ -1,59 +1,85 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🧺 E-Londri — Sistem Manajemen & Kasir Laundry Digital
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel Version](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel)
+![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-## About Laravel
+Aplikasi manajemen operasional dan sistem kasir _laundry_ digital berbasis RESTful API. Proyek ini dirancang untuk mempermudah pencatatan transaksi kasir, pelacakan status pengerjaan cuci/setrika secara real-time, serta pengelolaan data pelanggan dan paket layanan.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Daftar Isi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   [Struktur Tim & Pembagian Peran](#-struktur-tim--pembagian-peran)
+-   [Arsitektur & Teknologi](#-arsitektur--teknologi)
+-   [Struktur Basis Data & ERD](#-struktur-basis-data--erd)
+-   [Panduan Instalasi & Konfigurasi Lokal](#-panduan-instalasi--konfigurasi-lokal)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 👥 Struktur Tim & Pembagian Peran
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Peran                  | Anggota Tim     | Tanggung Jawab Utama                                                                                         |
+| :--------------------- | :-------------- | :----------------------------------------------------------------------------------------------------------- |
+| **Project Manager**    | Nama PM         | Pengendalian _timeline_, penyusunan papan Kanban, QA fungsional, dan finalisasi dokumentasi repositori.      |
+| **Database Analyst**   | Nama DB Analyst | Perancangan ERD, skema migrasi Laravel, penentuan relasi Eloquent, serta pembuatan _Seeder_ & _Factory_.     |
+| **Backend Developer**  | Nama Backend    | Pembangunan RESTful API, validasi request (`FormRequest`), API Resource, dan pengelolaan transaksi database. |
+| **Frontend Developer** | Nama Frontend   | Pengembangan antarmuka kasir, konsumsi API _endpoint_, validasi _client-side_, dan penanganan _error flow_.  |
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🛠️ Arsitektur & Teknologi
 
-### Premium Partners
+-   **Framework Backend:** Laravel 11
+-   **Database Management System:** MySQL 8.0
+-   **Authentication:** Laravel Sanctum / JWT
+-   **API Documentation & Testing:** Postman Collection v2.1
+-   **Version Control System:** Git & GitHub
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🗄️ Struktur Basis Data & ERD
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Sistem E-Londri menggunakan 4 tabel utama dengan relasi relasional:
 
-## Code of Conduct
+[ customers ] (1) <--- (N) [ orders ] (N) <---> (N) [ services ]
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Penjelasan Entitas:
 
-## Security Vulnerabilities
+1. **`customers`** (Master Pelanggan): Menyimpan data identitas pelanggan (`name`, `phone`, `address`).
+2. **`services`** (Master Layanan): Menyimpan paket laundry (`name`, `price_per_kg`, `unit`).
+3. **`orders`** (Kepala Transaksi): Mencatat nota transaksi (`invoice_code`, `order_date`, `completion_date`, `status`, `total_price`).
+4. **`order_details`** (Pivot Table): Hubungan _Many-to-Many_ antara pesanan dan paket layanan (`qty`, `subtotal`).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## ⚙️ Panduan Instalasi & Konfigurasi Lokal
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Ikuti langkah-langkah berikut untuk menjalankan proyek di lingkungan lokal:
+
+### 1. Prasyarat Sistem
+
+-   PHP >= 8.2
+-   Composer >= 2.x
+-   MySQL Server
+-   Git
+
+### 2. Langkah Instalasi
+
+```bash
+# 1. Clone repositori dari GitHub
+git clone [https://github.com/username/elondri9.git](https://github.com/username/elondri9.git)
+
+# 2. Masuk ke direktori proyek
+cd elondri9
+
+# 3. Install dependensi PHP via Composer
+composer install
+
+# 4. Salin berkas lingkungan (.env)
+cp .env.example .env
+
+# 5. Generate Application Key
+php artisan key:generate
+```
